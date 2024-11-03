@@ -42,6 +42,9 @@ export const userGoogleLogin = async (req: Request, res: Response, next: NextFun
 
         const { email, sub, given_name, family_name } = payload;
 
+
+        console.log(payload)
+
         // Check if the user exists
         let user = await User.findOne({ googleId: sub });
 
@@ -49,7 +52,7 @@ export const userGoogleLogin = async (req: Request, res: Response, next: NextFun
             // Register new user
             user = new User({
                 firstName: given_name,
-                lastName: family_name,
+                lastName: family_name || '',
                 email,
                 googleId: sub,
             });

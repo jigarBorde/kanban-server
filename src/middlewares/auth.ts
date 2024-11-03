@@ -14,7 +14,6 @@ interface AuthenticatedRequest extends Request {
 export const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     const authHeader = req.cookies['Authtoken'];
 
-    console.log(authHeader);
 
     if (!authHeader) {
         res.status(401).json({ success: false, message: 'Access token is missing or invalid' });

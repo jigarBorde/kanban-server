@@ -99,18 +99,18 @@ taskSchema.index({ ownerId: 1, status: 1 });
 taskSchema.index({ assigneeId: 1, status: 1 });
 taskSchema.index({ createdAt: -1 });
 
-// Middleware to enforce task movement rules
-taskSchema.pre('save', async function (next) {
-    if (this.isModified('status')) {
-        const canMove = this.canUserMoveToStatus(this.get('lastModifiedBy'), this.status);
-        if (!canMove) {
-            const errorMessage = this.status === TaskStatus.DONE
-                ? 'Only the task owner can move tasks to Done status'
-                : 'You must be either the owner or assignee to move this task';
-            throw new Error(errorMessage);
-        }
-    }
-    next();
-});
+// // Middleware to enforce task movement rules
+// taskSchema.pre('save', async function (next) {
+//     if (this.isModified('status')) {
+//         const canMove = this.canUserMoveToStatus(this.get('lastModifiedBy'), this.status);
+//         if (!canMove) {
+//             const errorMessage = this.status === TaskStatus.DONE
+//                 ? 'Only the task owner can move tasks to Done status'
+//                 : 'You must be either the owner or assignee to move this task';
+//             throw new Error(errorMessage);
+//         }
+//     }
+//     next();
+// });
 
 export const Task = model<ITaskDocument>('Task', taskSchema);
