@@ -18,7 +18,7 @@ app.use(cookieParser());
 //CORS setup
 app.use(
     cors({
-        origin: [envConfig.get('frontendURL')],
+        origin: [envConfig.get('frontendURL'), 'http://localhost:4173'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization', 'authtoken'],
         exposedHeaders: ['set-cookie'],

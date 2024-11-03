@@ -265,3 +265,109 @@ export const getAllUsers = async (
         return next(new ErrorHandler(500, "Internal server error"));
     }
 };
+
+
+
+export const deleteTask = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        if (!req.user) {
+            return next(new ErrorHandler(401, "Authentication required"));
+        }
+
+        const task = await Task.findById(req.params.id);
+        if (!task) {
+            return next(new ErrorHandler(401, "Task not found"));
+        }
+
+        await Task.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'Task deleted successfully' });
+
+    } catch (error) {
+        console.error('Error in Deleting Task:', error);
+        return next(new ErrorHandler(500, "Internal server error"));
+    }
+};
+
+
+
+
+export const updateTask = async (
+    req: AuthenticatedRequest & { body: CreateTaskBody },
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        if (!req.user) {
+            return next(new ErrorHandler(401, "Authentication required"));
+        }
+
+        const {
+            title,
+            description,
+            priority,
+            assigneeId,
+            labels,
+            dueDate,
+            status
+        } = req.body;
+
+        const taskId = req.params.id;
+
+
+        // Input validation
+        if (!title?.trim()) {
+            return next(new ErrorHandler(400, "Title is required"));
+        }
+
+        if (!description?.trim()) {
+            return next(new ErrorHandler(400, "Description is required"));
+        }
+
+
+        if (!Object.values(Priority).includes(priority)) {
+            return next(new ErrorHandler(400, "Invalid priority value"));
+        }
+
+        if (!Object.values(TaskStatus).includes(status)) {
+            return next(new ErrorHandler(400, "Invalid status value"));
+        }
+
+        // Validate assigneeId is a valid MongoDB ObjectId
+        if (!Types.ObjectId.isValid(assigneeId)) {
+            return next(new ErrorHandler(400, "Invalid assignee ID"));
+        }
+
+        // Validate dueDate is a valid date
+        const parsedDueDate = new Date(dueDate);
+        if (isNaN(parsedDueDate.getTime())) {
+            return next(new ErrorHandler(400, "Invalid due date"));
+        }
+
+        // Validate labels array
+        if (!Array.isArray(labels)) {
+            return next(new ErrorHandler(400, "Labels must be an array"));
+        }
+
+        // Store user ID in a variable after authentication check
+        // const userId = req.user.userId;
+
+
+
+        const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            req.body,
+            { new: true }
+        );
+
+
+        res.json({ success: true, data: { task: updatedTask } });
+
+    } catch (error) {
+        console.error('Error updating task status:', error);
+        return next(new ErrorHandler(500, "Internal server error"));
+    }
+};
