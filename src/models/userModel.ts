@@ -25,10 +25,4 @@ const userSchema = new Schema<IUser>({
 });
 
 
-// Static method for Google OAuth
-userSchema.statics.findByGoogleId = function (googleId: string) {
-    return this.findOne({ googleId });
-};
-
-
 export const User = model<IUser>('User', userSchema);

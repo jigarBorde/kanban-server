@@ -82,7 +82,6 @@ export const userGoogleLogin = async (req: Request, res: Response, next: NextFun
             user
         });
     } catch (error) {
-        // next(error);
         console.log(error);
         return next(new ErrorHandler(400, "Email not verified with Google"));
 
@@ -124,7 +123,7 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response, next:
     }
 };
 
-
+// Logout controller
 export const logout = (req: Request, res: Response): void => {
     res.clearCookie('Authtoken', { path: '/' });
     res.status(200).json({

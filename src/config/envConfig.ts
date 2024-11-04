@@ -41,5 +41,4 @@ const envConfig = {
 
 export default envConfig;
 
-// Optional: Export type for use in other files
 export type { EnvConfig };
