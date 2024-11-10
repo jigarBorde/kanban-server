@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, CookieOptions } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import envConfig from '../../config/envConfig';
 import { User } from '../../models/userModel';
@@ -69,10 +69,14 @@ export const userGoogleLogin = async (req: Request, res: Response, next: NextFun
             { expiresIn: '24h' }
         );
 
-        res.cookie('Authtoken', jwtToken, {
+        const cookieOptions: CookieOptions = {
             httpOnly: true,
+            secure: envConfig.get('nodeEnv') === 'production',
             maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        });
+            sameSite: 'none'
+        };
+
+        res.cookie('Authtoken', jwtToken, cookieOptions);
 
 
         res.json({
